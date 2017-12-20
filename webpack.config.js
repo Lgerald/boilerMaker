@@ -1,10 +1,14 @@
 module.exports = {
-    entry: './index.js', //for now, eentry is index in root of whole folder
+    entry: './app/main.jsx',
     output: {
-        path: __dirname,
-        filename: './public/bundle.js' //im assuming bundle will be in the public folder
+        path: __dirname + '/public',
+        filename: 'bundle.js' //im assuming bundle will be in the public folder
     },
+    context: __dirname,
     devtool: 'source-map',
+    resolve: {
+        extensions: ['.js', '.jsx']
+    },
     module: {
         rules: [
             {
