@@ -1,6 +1,7 @@
 const userRouter = require('express').Router()
 const { User } = require('../models')
 
+ 
 userRouter.get('/', (req,res,next) => {
     User.findAll()
         .then(users => res.json(users))
@@ -18,16 +19,9 @@ userRouter.post('/', (req,res,next) => {
         if (bool) {
             user
               .update({ password })
-              .then(newUser => res.status(201).json(newUser));
-            
+              .then(newUser => res.status(201).json(newUser));  
         }
-        else {
-            if (password === user.password) {
-                res.status(302).json(user)
-            } else {
-                res.send("user exists, but invalid password, please try again")
-            }
-        }
+        else {res.send("user exists, please login")}
     })
     .catch(next)
 })
