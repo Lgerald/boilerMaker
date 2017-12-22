@@ -1,9 +1,41 @@
 const path = require('path')
+const { db, User } = require('./models')
 const express = require('express')
+const session = require('express-session')
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+const passport = require('passport')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const app = express();
 
+const dbStore = new SequelizeStore({ db: db })
+
+dbStore.sync()
+      .then(() => {
+        console.log('Session store synced')
+      })
+      .catch(console.error)
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || "super duper secret code goes here",
+  resave: false,
+  saveUninitialized: false
+}))
+
+app.use(passport.initialize())
+app.use(passport.session())
+passport.serializeUser((user, done) => {
+  try {
+    done(null, user.id)
+  } catch (err) {
+    done(err)
+  }
+})
+passport.deserializeUser((id, done) => {
+  User.findById(id)
+    .then(user => done(null, user))
+    .catch(done)
+})
 
 app.use(express.static(path.join(__dirname, '../public')))
 

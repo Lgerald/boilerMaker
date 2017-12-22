@@ -2,7 +2,7 @@ const db = require ('../db')
 
 
 //MODELS GO HERE
-const firstModel = require('./firstModel')
+const User = require('./Users')
 
 
 //ASSOCIATIONS GO HERE
@@ -12,5 +12,5 @@ const firstModel = require('./firstModel')
 
 module.exports = {
     db,
-    firstModel
+    User
 }
