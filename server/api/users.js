@@ -16,8 +16,10 @@ userRouter.post('/', (req,res,next) => {
     })
     .spread((user, bool) =>{
         if (bool) {
-            user.password = password
-            res.status(201).json(user)
+            user
+              .update({ password })
+              .then(newUser => res.status(201).json(newUser));
+            
         }
         else {
             if (password === user.password) {
