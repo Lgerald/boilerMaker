@@ -46,4 +46,32 @@ userRouter.post('/login', (req,res,next) => {
     .catch(next)
 })
 
+userRouter.post('/logout', (req,res,next) => {
+    req.logout()
+    res.sendStatus(200, "successfully logged out")
+})
+
+userRouter.post('/signup', (req,res,next) => {
+    const { email, password } = req.body
+    User.findOrCreate({
+        where: { email }
+    })
+    .spread((user, bool) => {
+        if (bool) {
+            user.update({ password })
+                .then((newUser) => req.login(newUser, err => {
+                    if (err) next(err)
+                    else res.json(newUser)
+                }))
+        } else {res.redirect("/login")}
+    })
+    .catch(next)
+})
+
+
+userRouter.get("/me", (req, res, next) => {
+  res.json(req.user);
+});
+
+
 module.exports = userRouter

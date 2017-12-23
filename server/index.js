@@ -8,7 +8,7 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const app = express();
 
-const dbStore = new SequelizeStore({ db: db })
+const dbStore = new SequelizeStore({ db })
 
 dbStore.sync()
       .then(() => {
@@ -18,6 +18,7 @@ dbStore.sync()
 
 app.use(session({
   secret: process.env.SESSION_SECRET || "super duper secret code goes here",
+  store: dbStore,
   resave: false,
   saveUninitialized: false
 }))
@@ -36,6 +37,12 @@ passport.deserializeUser((id, done) => {
     .then(user => done(null, user))
     .catch(done)
 })
+
+app.use(function (req, res, next) {
+  console.log('SESSION: ', req.session);
+  console.log('USER ', req.user)
+  next();
+});
 
 app.use(express.static(path.join(__dirname, '../public')))
 
