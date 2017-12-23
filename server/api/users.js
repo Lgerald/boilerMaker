@@ -26,4 +26,24 @@ userRouter.post('/', (req,res,next) => {
     .catch(next)
 })
 
+userRouter.post('/login', (req,res,next) => {
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    })
+    .then((user) => {
+        if (!user) {res.status(401).send('user not found')}
+        else if (User.encryptPassword(req.body.password, user.salt) !== user.password) {
+               res.status(401).send("incorrect password");
+             } else {
+               req.login(user, err => {
+                 if (err) next(err);
+                 else res.json(user);
+               });
+             }
+    })
+    .catch(next)
+})
+
 module.exports = userRouter
