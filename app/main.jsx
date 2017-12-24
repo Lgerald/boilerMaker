@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import store from './store'
 import Root from './components/root.jsx'
+if (process.env.NODE_ENV === "development") {
+  require("./secret.js");
+}
+require("./main.jsx");
 
 import '../public/index.css'
 
